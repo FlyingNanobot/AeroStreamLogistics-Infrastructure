@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: processing-deployment
+  namespace: aerostream
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aerostream-processing
+  template:
+    metadata:
+      labels:
+        app: aerostream-processing
+    spec:
+      containers:
+        - name: processing
+          image: aerostream-processing:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
