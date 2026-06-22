@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\k8s",
+    "\\k8s\\api",
+    "\\k8s\\ingress",
+    "\\k8s\\namespace",
+    "\\k8s\\processing",
+    "\\k8s\\ui",
+    "\\k8s\\worker"
+  ],
+  "PreviewInSolutionExplorer": false
+}
