@@ -1,36 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-deployment
+  name: worker-deployment
   namespace: aerostream
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: aerostream-api
+      app: worker-deployment
   template:
     metadata:
       labels:
-        app: aerostream-api
+        app: worker-deployment
     spec:
       containers:
-        - name: api
-          image: aerostream-api:latest
+        - name: worker
+          image: aerostream-worker:latest
           imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 8080
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 5
-            periodSeconds: 5
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 10
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
+            - name: Kafka__BootstrapServers
+              value: "kafka-service:9092"
+            - name: Kafka__Topic
+              value: "telemetry-stream"
+            - name: Postgres__ConnectionString
+              value: "Host=postgres;Port=5432;Database=telemetrydb;Username=admin;Password=admin123"
+            - name: OpenSky__ClientId
+              valueFrom:
+                secretKeyRef:
+                  name: aerostream-app-secrets
+                  key: opensky-clientId
+            - name: OpenSky__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: aerostream-app-secrets
+                  key: opensky-clientSecret
           resources:
             requests:
               cpu: "100m"

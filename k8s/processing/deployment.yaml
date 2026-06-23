@@ -7,20 +7,34 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: aerostream-processing
+      app: processing-deployment
   template:
     metadata:
       labels:
-        app: aerostream-processing
+        app: processing-deployment
     spec:
       containers:
         - name: processing
           image: aerostream-processing:latest
           imagePullPolicy: IfNotPresent
-          resources:
-            requests:
-              cpu: "50m"
-              memory: "64Mi"
-            limits:
-              cpu: "250m"
-              memory: "256Mi"
+          env:
+            - name: Redis__Connection
+              value: "redis:6379,abortConnect=false"
+            - name: Kafka__BootstrapServers
+              value: "kafka-service:9092"
+            - name: Kafka__Topic
+              value: "telemetry-stream"
+            - name: OpenSearch__Url
+              value: "http://opensearch:9200"
+            - name: Postgres__ConnectionString
+              value: "Host=postgres;Port=5432;Database=telemetrydb;Username=admin;Password=admin123"
+            - name: S3__AccessKey
+              valueFrom:
+                secretKeyRef:
+                  name: aerostream-app-secrets
+                  key: s3-accessKey
+            - name: S3__SecretAccessKey
+              valueFrom:
+                secretKeyRef:
+                  name: aerostream-app-secrets
+                  key: s3-secretAccessKey

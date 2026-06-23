@@ -1,26 +1,12 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: worker-deployment
+  name: ui-service
   namespace: aerostream
 spec:
-  replicas: 1
   selector:
-    matchLabels:
-      app: aerostream-worker
-  template:
-    metadata:
-      labels:
-        app: aerostream-worker
-    spec:
-      containers:
-        - name: worker
-          image: aerostream-worker:latest
-          imagePullPolicy: IfNotPresent
-          resources:
-            requests:
-              cpu: "50m"
-              memory: "64Mi"
-            limits:
-              cpu: "250m"
-              memory: "256Mi"
+    app: ui-deployment
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP

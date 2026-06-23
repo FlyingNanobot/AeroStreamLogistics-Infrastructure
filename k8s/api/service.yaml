@@ -5,7 +5,7 @@ metadata:
   namespace: aerostream
 spec:
   selector:
-    app: aerostream-api
+    app: api-deployment
   ports:
     - port: 8080
       targetPort: 8080

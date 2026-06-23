@@ -4,27 +4,31 @@ metadata:
   name: aerostream-ingress
   namespace: aerostream
   annotations:
-    kubernetes.io/ingress.class: "traefik"
+    ingress.kubernetes.io/ssl-redirect: "true" 
 spec:
+  tls:
+  - hosts:
+    - ui.localdev.me
+    - api.localdev.me
+    secretName: aerostream-tls-cert
   rules:
-    - host: ui.localdev.me
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: ui-service
-                port:
-                  number: 8080
-
-    - host: api.localdev.me
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: api-service
-                port:
-                  number: 8080
+  - host: ui.localdev.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ui-service
+            port:
+              number: 8080
+  - host: api.localdev.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-service
+            port:
+              number: 8080

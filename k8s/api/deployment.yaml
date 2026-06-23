@@ -7,11 +7,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: aerostream-api
+      app: api-deployment # 🌟 Fixed to match deploy.ps1 wait selectors
   template:
     metadata:
       labels:
-        app: aerostream-api
+        app: api-deployment
     spec:
       containers:
         - name: api
@@ -19,6 +19,20 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
+          env:
+            - name: Kafka__BootstrapServers
+              value: "kafka-service:9092"
+            - name: Kafka__Topic
+              value: "telemetry-stream"
+            - name: Postgres__ConnectionString
+              value: "Host=postgres;Port=5432;Database=telemetrydb;Username=admin;Password=admin123"
+            - name: OpenSearch__Url
+              value: "http://opensearch:9200"
+            - name: AzureAd__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: aerostream-app-secrets
+                  key: azure-api-clientSecret
           readinessProbe:
             httpGet:
               path: /health

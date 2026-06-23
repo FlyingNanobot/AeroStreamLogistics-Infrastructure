@@ -7,34 +7,52 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: aerostream-ui
+      app: ui-deployment
   template:
     metadata:
       labels:
-        app: aerostream-ui
+        app: ui-deployment
     spec:
+      hostAliases:
+        - ip: "172.19.0.3"
+          hostnames:
+            - "api.localdev.me"
+            - "ui.localdev.me"
       containers:
         - name: ui
           image: aerostream-ui:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
+            - name: Api__BaseUrl
+              value: "http://api-service:8080/"
+            - name: AzureAd__Instance
+              value: "https://login.microsoftonline.com/"
+            - name: AzureAd__TenantId
+              value: "0e6277e6-a620-4d77-b007-ab0fa9f3963f"
+            - name: AzureAd__ClientId
+              value: "783dbf2e-77da-4957-96d1-d36cd23d7b85"
+            - name: AzureAd__CallbackPath
+              value: "/signin-oidc"
+            - name: AzureAd__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: aerostream-app-secrets
+                  key: azure-ui-clientSecret
           readinessProbe:
             httpGet:
               path: /
               port: 8080
+              scheme: HTTP
             initialDelaySeconds: 5
             periodSeconds: 5
           livenessProbe:
             httpGet:
               path: /
               port: 8080
+              scheme: HTTP
             initialDelaySeconds: 10
             periodSeconds: 10
-          resources:
-            requests:
-              cpu: "100m"
-              memory: "128Mi"
-            limits:
-              cpu: "500m"
-              memory: "512Mi"
