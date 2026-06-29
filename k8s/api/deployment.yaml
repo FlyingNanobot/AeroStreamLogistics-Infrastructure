@@ -28,6 +28,8 @@ spec:
               value: "Host=postgres;Port=5432;Database=telemetrydb;Username=admin;Password=admin123"
             - name: OpenSearch__Url
               value: "http://opensearch:9200"
+            - name: Redis__Connection
+              value: "redis:6379"
             - name: AzureAd__ClientSecret
               valueFrom:
                 secretKeyRef:
