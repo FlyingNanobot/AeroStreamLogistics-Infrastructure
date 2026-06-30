@@ -7,7 +7,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: api-deployment # 🌟 Fixed to match deploy.ps1 wait selectors
+      app: api-deployment
   template:
     metadata:
       labels:
